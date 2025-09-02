@@ -51,6 +51,7 @@ class ChatClient:
                     print("[Вы] ", end="")
 
                 except KeyboardInterrupt:
+                    self.running = False
                     break
                 except Exception as e:
                     print(f"[ОШИБКА] {e}")
