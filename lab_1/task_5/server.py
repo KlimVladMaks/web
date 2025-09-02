@@ -1,4 +1,5 @@
 import socket
+from urllib.parse import parse_qs
 
 
 class GradeHTTPServer:
@@ -52,6 +53,20 @@ class GradeHTTPServer:
         else:
             return self.create_response(405, "Method Not Allowed")
     
+    def handle_post(self, body):
+        try:
+            params = parse_qs(body)
+            discipline = params.get('discipline', [''])[0]
+            grade = params.get('grade', [''])[0]
+            
+            if discipline and grade:
+                self.grades[discipline] = grade
+                return self.create_response(200, "OK", "Оценка добавлена успешно")
+            else:
+                return self.create_response(400, "Bad Request: Missing parameters")
+        except Exception as e:
+                return self.create_response(400, f"Bad Request: {str(e)}")
+
     def create_response(self, status_code, message, content='', content_type='text/plain'):
         response = f"HTTP/1.1 {status_code} {message}\r\n"
         response += "Content-Type: {}\r\n".format(content_type)
