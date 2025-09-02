@@ -27,10 +27,11 @@ class ChatClient:
             print("[ОШИБКА] Не удалось отправить сообщение")
     
     def start(self):
+        print("Многопользовательский чат")
+        username = input("Введите ваше имя: ")
+        
         try:
             self.client_socket.connect((self.host, self.port))
-
-            username = input("Введите ваше имя: ")
             self.send_message(username)
 
             receive_thread = threading.Thread(target=self.receive_messages)
