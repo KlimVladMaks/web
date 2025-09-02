@@ -26,6 +26,7 @@ class GradeHTTPServer:
                     response = self.handle_request(request_data)
                     client_socket.sendall(response.encode('utf-8'))
                 client_socket.close()
+                print(f"Подключение с {client_address} завершено")
 
         except KeyboardInterrupt:
             print("\nСервер остановлен")
