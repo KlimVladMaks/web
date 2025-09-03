@@ -20,13 +20,20 @@ class GradeHTTPServer:
             while True:
                 client_socket, client_address = server_socket.accept()
                 print(f"Подключение от {client_address}")
+                client_socket.settimeout(5.0)
 
-                request_data = client_socket.recv(1024).decode('utf-8')
-                if request_data:
-                    response = self.handle_request(request_data)
-                    client_socket.sendall(response.encode('utf-8'))
-                client_socket.close()
-                print(f"Подключение с {client_address} завершено")
+                try:
+                    request_data = client_socket.recv(1024).decode('utf-8')
+                    if request_data:
+                        response = self.handle_request(request_data)
+                        client_socket.sendall(response.encode('utf-8'))
+                except socket.timeout:
+                    print(f"Таймаут при чтении данных от {client_address}")
+                except Exception as e:
+                    print(f"Ошибка при обработке запроса от {client_address}: {e}")
+                finally:
+                    client_socket.close()
+                    print(f"Подключение с {client_address} завершено")
 
         except KeyboardInterrupt:
             print("\nСервер остановлен")
