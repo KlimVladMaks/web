@@ -16,6 +16,7 @@ def main():
         while True:
             client_socket, client_address = server_socket.accept()
             print(f"Подключение от: {client_address}")
+            client_socket.settimeout(5.0)
 
             try:
                 request = client_socket.recv(1024).decode('utf-8')
@@ -37,11 +38,13 @@ def main():
                 client_socket.sendall(response.encode('utf-8'))
                 print("Ответ с HTML-страницей отправлен")
             
+            except socket.timeout:
+                    print(f"Таймаут при чтении данных от {client_address}")
             except Exception as e:
                 print(f"Ошибка при обработке запроса: {e}")
             finally:
                 client_socket.close()
-                print("Соединение закрыто\n")
+                print(f"Соединение с {client_address} закрыто\n")
     
     except KeyboardInterrupt:
         print("\nСервер остановлен")
